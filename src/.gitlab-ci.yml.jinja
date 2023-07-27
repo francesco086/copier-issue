@@ -2,4 +2,4 @@ build:
   image: ${DOCKER_REGISTRY}/docker:latest
   stage: build
   script:
-    - docker image build -t mkdocs-material .
+    - docker image build -t {{ docker_image_name }} .

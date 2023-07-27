@@ -6,6 +6,8 @@ import copier
 
 
 class TestFileContent(TestCase):
+    docker_image_name = "test_image"
+
     def setUp(self) -> None:
         self.init_template_values()
         self.tmpdir = TemporaryDirectory()
@@ -13,12 +15,16 @@ class TestFileContent(TestCase):
 
     def tearDown(self) -> None:
         return self.tmpdir.cleanup()
-    
+
     def test_destination_folder_exits(self):
         assert Path(self.tmpdir.name).exists()
 
     def test_gitlab_ci_file_exists(self):
         assert (Path(self.tmpdir.name) / ".gitlab-ci.yml").exists()
+
+    def test_docker_image_name_is_used_in_gitlab_ci_file(self):
+        gitlab_ci_content = (Path(self.tmpdir.name) / ".gitlab-ci.yml").read_text()
+        assert f"docker image build -t {self.docker_image_name}" in gitlab_ci_content
 
     @staticmethod
     def get_template_path() -> Path:
@@ -32,7 +38,7 @@ class TestFileContent(TestCase):
         )
 
     def get_example_answers(self) -> dict:
-        return {}
+        return {"docker_image_name": self.docker_image_name}
 
     def init_template_values(self):
         pass

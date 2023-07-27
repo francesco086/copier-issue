@@ -5,7 +5,7 @@ generate copies:
     - pip install -U pip setuptools wheel && pip install -r requirements.txt
     - . utils.sh
   script:
-    - copier copy src dst
+    - copier copy --data docker_image_name=mkdocs-material src dst
     - cp test/sample_dockerfiles/mkdocs-material dst/Dockerfile
     - hard-push-to-repo "dst" "${TEST_REPO_URL}"
     
