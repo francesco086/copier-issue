@@ -17,6 +17,9 @@ class TestFileContent(TestCase):
     def test_destination_folder_exits(self):
         assert Path(self.tmpdir.name).exists()
 
+    def test_gitlab_ci_file_exists(self):
+        assert (Path(self.tmpdir.name) / ".gitlab-ci.yml").exists()
+
     @staticmethod
     def get_template_path() -> Path:
         return Path(__file__).parent.parent / "src"
