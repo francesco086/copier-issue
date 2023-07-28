@@ -3,11 +3,11 @@ DOCKER_IMAGE_TAGS="${1}"
 TEST_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:test-${CI_PIPELINE_ID}"
 docker pull ${TEST_IMAGE_NAME}
 
-for TAG in "${DOCKER_IMAGE_TAGS}"
+for TAG in ${DOCKER_IMAGE_TAGS}
 do
     echo "Preparing to push the docker image using the tag ${TAG}"
 
-    if [[ -n "${TAG} ]]
+    if [[ -n "${TAG}" ]]
     then
         TAG=":${TAG}"
     fi
