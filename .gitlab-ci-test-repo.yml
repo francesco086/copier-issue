@@ -8,6 +8,7 @@ generate copies:
     - copier copy --data docker_image_name=mkdocs-material-copier src dst
     - cp test/sample_files/mkdocs-material dst/Dockerfile
     - cp test/sample_files/test.sh dst/test.sh
+    - cp test/sample_files/determine-docker-image-tags.sh dst/determine-docker-image-tags.sh
     - hard-push-to-repo "dst" "${TEST_REPO_URL}"
 
 run test repo pipeline:
