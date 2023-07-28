@@ -1,6 +1,12 @@
+DOCKER_IMAGE_TAGS="${1}"
+
 TEST_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:test-${CI_PIPELINE_ID}"
 docker pull ${TEST_IMAGE_NAME}
-PROD_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:latest"
-docker image tag ${TEST_IMAGE_NAME} ${PROD_IMAGE_NAME}
-docker image push ${PROD_IMAGE_NAME}
-echo "Docker image ${PROD_IMAGE_NAME} is successfully pushed!"
+
+for TAG in "${DOCKER_IMAGE_TAGS}"
+do
+    PROD_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:${TAG}"
+    docker image tag ${TEST_IMAGE_NAME} ${PROD_IMAGE_NAME}
+    docker image push ${PROD_IMAGE_NAME}
+    echo "Docker image ${PROD_IMAGE_NAME} is successfully pushed!"
+done
