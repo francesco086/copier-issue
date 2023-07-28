@@ -17,6 +17,7 @@ determine docker image tags:
   image: ${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:test-${CI_PIPELINE_ID}
   script:
     - DOCKER_IMAGE_TAGS="$(sh determine-docker-image-tags.sh)"
+    - echo "Docker image will be tagged with the following tags (space separated) '${DOCKER_IMAGE_TAGS}'"
     - echo "DOCKER_IMAGE_TAGS=${DOCKER_IMAGE_TAGS}" >> docker-image-tags.env
   artifacts:
     reports:

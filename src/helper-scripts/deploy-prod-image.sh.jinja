@@ -5,8 +5,16 @@ docker pull ${TEST_IMAGE_NAME}
 
 for TAG in "${DOCKER_IMAGE_TAGS}"
 do
-    PROD_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:${TAG}"
+    echo "Preparing to push the docker image using the tag ${TAG}"
+
+    if [[ -n "${TAG} ]]
+    then
+        TAG=":${TAG}"
+    fi
+    PROD_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}${TAG}"
+
     docker image tag ${TEST_IMAGE_NAME} ${PROD_IMAGE_NAME}
     docker image push ${PROD_IMAGE_NAME}
+    
     echo "Docker image ${PROD_IMAGE_NAME} is successfully pushed!"
 done
