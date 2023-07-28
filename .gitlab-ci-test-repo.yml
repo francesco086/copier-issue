@@ -5,10 +5,11 @@ generate copies:
     - pip install -U pip setuptools wheel && pip install -r requirements.txt
     - . utils.sh
   script:
-    - copier copy --data docker_image_name=mkdocs-material src dst
-    - cp test/sample_dockerfiles/mkdocs-material dst/Dockerfile
+    - copier copy --data docker_image_name=mkdocs-material-copier src dst
+    - cp test/sample_files/mkdocs-material dst/Dockerfile
+    - cp test/sample_files/test.sh dst/test.sh
     - hard-push-to-repo "dst" "${TEST_REPO_URL}"
-    
+
 run test repo pipeline:
   stage: test
   trigger: repos/data-science-lib/templates/docker-image-creator-test-repo

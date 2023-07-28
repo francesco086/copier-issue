@@ -1,5 +1,28 @@
 build:
+  extends: .docker-auth
   image: ${DOCKER_REGISTRY}/docker:latest
   stage: build
   script:
     - docker image build -t {{ docker_image_name }} .
+    - . helper-scripts/deploy-test-image.sh
+
+test:
+  image: ${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:test-${CI_PIPELINE_ID}
+  stage: test
+  script:
+    - . test.sh
+
+deploy:
+  extends: .docker-auth
+  image: ${DOCKER_REGISTRY}/docker:latest
+  stage: deploy
+  script:
+    - . helper-scripts/deploy-prod-image.sh
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+
+.docker-auth:
+  before_script:
+    - mkdir -p ${HOME}/.docker
+    - echo ${DOCKER_AUTH_CONFIG} >> ${HOME}/.docker/config.json
+
