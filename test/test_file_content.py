@@ -37,6 +37,9 @@ class TestFileContent(TestCase):
     def test_sample_determine_docker_image_tags_exists(self):
         assert (Path(self.tmpdir.name) / "determine-docker-image-tags.sh").exists()
 
+    def test_answer_file_exists(self):
+        assert (Path(self.tmpdir.name) / ".copier-answers.yml").exists()
+
     def test_docker_image_name_is_used_in_gitlab_ci_file(self):
         file_content = (Path(self.tmpdir.name) / ".gitlab-ci.yml").read_text()
         assert f"docker image build -t {self.docker_image_name}" in file_content

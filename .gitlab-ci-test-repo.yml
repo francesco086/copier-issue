@@ -7,7 +7,7 @@ generate copies:
     - pip install -U pip setuptools wheel && pip install -r requirements.txt
     - . utils.sh
   script:
-    - copier copy --answers-file copier-answers.yml src dst
+    - copier copy --data docker_image_name=docker-image-creator-test src dst
     - if [[ -e ${TEST_INPUT_DIR}/Dockerfile ]]; then cp ${TEST_INPUT_DIR}/Dockerfile dst/Dockerfile; fi
     - if [[ -e ${TEST_INPUT_DIR}/test.sh ]]; then cp ${TEST_INPUT_DIR}/test.sh dst/test.sh; fi
     - if [[ -e ${TEST_INPUT_DIR}/determine-docker-image-tags.sh ]]; then cp ${TEST_INPUT_DIR}/determine-docker-image-tags.sh dst/determine-docker-image-tags.sh; fi
