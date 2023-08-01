@@ -1,4 +1,4 @@
-function hard-push-to-repo {
+hard_push_to_repo () {
     # Push the content of a folder to the main branch of a repo, resetting the git history, leaving one single commit.
 	# Args:
 	# 1. directory to push to the repo
@@ -7,7 +7,7 @@ function hard-push-to-repo {
     SRC_DIR="${1}"
     REPO_URL="${2}"
 
-    pushd "${SRC_DIR}"
+    cd "${SRC_DIR}"
 
     git config --global user.name "automated"
     git config --global user.email "automated@eon.com"
@@ -19,5 +19,5 @@ function hard-push-to-repo {
     git commit -m "Hard push [skip ci]"
     git push -f --set-upstream origin main
 
-    popd
+    cd ..
 }

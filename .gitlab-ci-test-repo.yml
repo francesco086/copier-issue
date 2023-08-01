@@ -1,16 +1,21 @@
 generate copies:
-  image: python:3.11
+  image: python:3.11-alpine
   stage: build
+  resource_group: integration-test
   before_script:
+    - apk update && apk add git
     - pip install -U pip setuptools wheel && pip install -r requirements.txt
     - . utils.sh
   script:
     - copier copy --data docker_image_name=mkdocs-material-copier src dst
-    - cp test/sample_files/mkdocs-material dst/Dockerfile
-    - cp test/sample_files/test.sh dst/test.sh
-    - cp test/sample_files/determine-docker-image-tags.sh dst/determine-docker-image-tags.sh
-    - hard-push-to-repo "dst" "${TEST_REPO_URL}"
+    - if [[ -e ${TEST_INPUT_DIR}/Dockerfile ]]; then cp ${TEST_INPUT_DIR}/Dockerfile dst/Dockerfile; fi
+    - if [[ -e ${TEST_INPUT_DIR}/test.sh ]]; then cp ${TEST_INPUT_DIR}/test.sh dst/test.sh; fi
+    - if [[ -e ${TEST_INPUT_DIR}/determine-docker-image-tags.sh ]]; then cp ${TEST_INPUT_DIR}/determine-docker-image-tags.sh dst/determine-docker-image-tags.sh; fi
+    - hard_push_to_repo "dst" "${TEST_REPO_URL}"
 
 run test repo pipeline:
   stage: test
-  trigger: repos/data-science-lib/templates/docker-image-creator-test-repo
+  resource_group: integration-test
+  trigger: 
+    project: repos/data-science-lib/templates/docker-image-creator-test-repo
+    strategy: depend

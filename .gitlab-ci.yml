@@ -1,3 +1,12 @@
+set resource group process mode:
+  image: curlimages/curl:latest
+  stage: .pre
+  script:
+    - > 
+        curl --request PUT --data "process_mode=oldest_first" --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/resource_groups/trigger-test-repo"
+
+        curl --request PUT --data "process_mode=oldest_first" --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/resource_groups/integration-test"
+
 unit test:
   image: python:3.11-alpine
   stage: test
@@ -8,8 +17,14 @@ unit test:
     - python -m unittest
 
 integration test:
-  needs: ["unit test"]
-  resource_group: push-to-test-repo
+  resource_group: trigger-test-repo
   trigger:
     include:
       - local: .gitlab-ci-test-repo.yml
+    forward:
+      pipeline_variables: true
+    strategy: depend
+  parallel:
+    matrix:
+      - TEST_INPUT_DIR: "test/integration_test_inputs/mkdocs-material"
+      - TEST_INPUT_DIR: "test/integration_test_inputs/no-input"
