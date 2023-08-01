@@ -1,4 +1,4 @@
-TEST_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:test-${CI_PIPELINE_ID}"
+TEST_IMAGE_NAME="${DOCKER_REGISTRY}/{{ docker_image_name }}:test-${CI_PIPELINE_ID}"
 docker image tag {{ docker_image_name }} ${TEST_IMAGE_NAME}
 docker image push ${TEST_IMAGE_NAME}
 echo "Docker image ${TEST_IMAGE_NAME} is successfully pushed."

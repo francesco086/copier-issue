@@ -1,4 +1,5 @@
 from pathlib import Path
+from subprocess import run
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 
@@ -39,6 +40,17 @@ class TestFileContent(TestCase):
 
     def test_answer_file_exists(self):
         assert (Path(self.tmpdir.name) / ".copier-answers.yml").exists()
+
+    def test_determine_docker_image_tags_returns_a_non_empty_string(self):
+        output = run(
+            [
+                "sh",
+                (Path(self.tmpdir.name) / "determine-docker-image-tags.sh").as_posix(),
+            ],
+            check=True,
+            capture_output=True,
+        )
+        assert output.stdout.decode("utf-8") != ""
 
     def test_docker_image_name_is_used_in_gitlab_ci_file(self):
         file_content = (Path(self.tmpdir.name) / ".gitlab-ci.yml").read_text()

@@ -1,6 +1,6 @@
 DOCKER_IMAGE_TAGS="${1}"
 
-TEST_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:test-${CI_PIPELINE_ID}"
+TEST_IMAGE_NAME="${DOCKER_REGISTRY}/{{ docker_image_name }}:test-${CI_PIPELINE_ID}"
 docker pull ${TEST_IMAGE_NAME}
 
 for TAG in ${DOCKER_IMAGE_TAGS}
@@ -11,7 +11,7 @@ do
     then
         TAG=":${TAG}"
     fi
-    PROD_IMAGE_NAME="${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}${TAG}"
+    PROD_IMAGE_NAME="${DOCKER_REGISTRY}/{{ docker_image_name }}${TAG}"
 
     docker image tag ${TEST_IMAGE_NAME} ${PROD_IMAGE_NAME}
     docker image push ${PROD_IMAGE_NAME}

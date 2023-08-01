@@ -1,39 +1,63 @@
-build:
+include:
+- template: Security/Container-Scanning.gitlab-ci.yml
+
+build_test_docker_image:
   stage: build
-  extends: .docker-auth
+  extends: .docker_auth
   image: ${DOCKER_REGISTRY}/docker:latest
   script:
     - docker image build -t {{ docker_image_name }} .
     - sh helper-scripts/deploy-test-image.sh
 
-test:
+test_built_docker_image:
   stage: test
-  image: ${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:test-${CI_PIPELINE_ID}
+  image: ${DOCKER_REGISTRY}/{{ docker_image_name }}:test-${CI_PIPELINE_ID}
   script:
     - sh test.sh
 
-determine docker image tags:
+determine_docker_image_tags:
   stage: deploy
-  image: ${DOCKER_REGISTRY}/apl211945-{{ docker_image_name }}:test-${CI_PIPELINE_ID}
+  image: ${DOCKER_REGISTRY}/{{ docker_image_name }}:test-${CI_PIPELINE_ID}
   script:
     - DOCKER_IMAGE_TAGS="$(sh determine-docker-image-tags.sh)"
     - echo "Docker image will be tagged with the following tags (space separated) '${DOCKER_IMAGE_TAGS}'"
     - echo "DOCKER_IMAGE_TAGS=${DOCKER_IMAGE_TAGS}" >> docker-image-tags.env
+    - echo "DOCKER_IMAGE_TAG_TO_SCAN=$(echo ${DOCKER_IMAGE_TAGS} | cut -d ' ' -f 1)" >> docker-image-tags.env
   artifacts:
     reports:
       dotenv: docker-image-tags.env
 
-deploy:
+deploy_docker_image:
   stage: deploy
-  needs: ["determine docker image tags"]
-  extends: .docker-auth
+  needs:
+    - job: determine_docker_image_tags
+      artifacts: true
+  extends: .docker_auth
   image: ${DOCKER_REGISTRY}/docker:latest
   script:
     - sh helper-scripts/deploy-prod-image.sh "${DOCKER_IMAGE_TAGS}"
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
-.docker-auth:
+container_scanning:
+  stage: deploy
+  needs:
+    - job: determine_docker_image_tags
+      artifacts: true
+    - job: deploy_docker_image
+  dependencies:
+    - determine_docker_image_tags
+  variables:
+    CS_IMAGE: ${DOCKER_REGISTRY}/{{ docker_image_name }}:${DOCKER_IMAGE_TAG_TO_SCAN}
+    CS_REGISTRY_USER: ${DOCKER_REGISTRY_USER}
+    CS_REGISTRY_PASSWORD: ${DOCKER_REGISTRY_PASSWORD}
+  before_script:
+    - >
+        echo "Next step is to scan the docker image ${DOCKER_REGISTRY}/{{ docker_image_name }}:${DOCKER_IMAGE_TAG_TO_SCAN}"
+  rules:
+  - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+
+.docker_auth:
   before_script:
     - mkdir -p ${HOME}/.docker
     - echo ${DOCKER_AUTH_CONFIG} >> ${HOME}/.docker/config.json
