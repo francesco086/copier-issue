@@ -70,7 +70,7 @@ class TestFileContent(TestCase):
 
     @staticmethod
     def get_template_path() -> Path:
-        return Path(__file__).parent.parent / "src"
+        return Path(__file__).parent.parent
 
     def use_copier(self):
         copier.run_copy(

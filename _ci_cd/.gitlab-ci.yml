@@ -1,5 +1,5 @@
 include:
-  - local: .gitlab-pre-var.yml
+  - local: _ci_cd/.gitlab-pre-var.yml
 
 
 set resource group process mode:
@@ -11,7 +11,7 @@ set resource group process mode:
         "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/resource_groups/${RESOURCE_GROUP}"
   rules:
     - changes:
-      - .gitlab-pre-variables.yml
+      - _ci_cd/.gitlab-pre-var.yml
   parallel:
     matrix:
       - RESOURCE_GROUP: ["trigger-test-repo", "integration-test"]
@@ -20,16 +20,16 @@ style:
   image: python:3.11
   before_script:
     - pip install -U pip wheel setuptools && pip install pre-commit black mypy refurb ruff
-    - pre-commit install
+    - pre-commit install -c _ci_cd/.pre-commit-config.yml
   script:
-    - pre-commit run --all-files
+    - pre-commit run --all-files -c _ci_cd/.pre-commit-config.yml
 
 unit test:
   image: python:3.11-alpine
   stage: test
   before_script:
     - apk update && apk add git
-    - pip install -U pip setuptools wheel && pip install -r requirements.txt
+    - pip install -U pip setuptools wheel && pip install -r _ci_cd/requirements.txt
   script:
     - python -m unittest
 
@@ -37,10 +37,10 @@ integration test:
   resource_group: trigger-test-repo
   trigger:
     include:
-      - local: .gitlab-ci-test-repo.yml
+      - local: _ci_cd/.gitlab-ci-test-repo.yml
     forward:
       pipeline_variables: true
     strategy: depend
   parallel:
     matrix:
-      - TEST_INPUT_DIR: ["test/integration_test_inputs/mkdocs-material", "test/integration_test_inputs/no-input"]
+      - TEST_INPUT_DIR: ["_test/integration_test_inputs/mkdocs-material", "_test/integration_test_inputs/no-input"]

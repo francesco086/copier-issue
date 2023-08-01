@@ -1,3 +1,9 @@
 docker_image_name:
   type: str
   help: What is the name of the docker image you want to create?
+
+_exclude:
+    - /.git
+    - /.gitignore
+    - /_ci_cd
+    - /_test
