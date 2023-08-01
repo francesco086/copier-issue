@@ -15,6 +15,6 @@ do
 
     docker image tag ${TEST_IMAGE_NAME} ${PROD_IMAGE_NAME}
     docker image push ${PROD_IMAGE_NAME}
-    
+
     echo "Docker image ${PROD_IMAGE_NAME} is successfully pushed!"
 done

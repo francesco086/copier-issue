@@ -6,16 +6,23 @@ set resource group process mode:
   image: curlimages/curl:latest
   stage: .pre
   script:
-    - > 
-        curl --request PUT --data "process_mode=${PROCESS_MODE}" --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" 
+    - >
+        curl --request PUT --data "process_mode=${PROCESS_MODE}" --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}"
         "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/resource_groups/${RESOURCE_GROUP}"
   rules:
-    - changes: 
+    - changes:
       - .gitlab-pre-variables.yml
   parallel:
     matrix:
       - RESOURCE_GROUP: ["trigger-test-repo", "integration-test"]
-    
+
+style:
+  image: python:3.11
+  before_script:
+    - pip install -U pip wheel setuptools && pip install pre-commit black mypy refurb ruff
+    - pre-commit install
+  script:
+    - pre-commit run --all-files
 
 unit test:
   image: python:3.11-alpine
