@@ -1,0 +1,8 @@
+variables:
+  PROCESS_MODE:
+    value: "oldest_first"
+    options:
+      - "unordered"
+      - "oldest_first"
+      - "newest_first"
+    description: "Order of processing jobs in resource group. Use oldest_first to guarantee integration tests to don't interfere with each other."

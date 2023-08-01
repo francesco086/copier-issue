@@ -1,11 +1,21 @@
+include:
+  - local: .gitlab-pre-var.yml
+
+
 set resource group process mode:
   image: curlimages/curl:latest
   stage: .pre
   script:
     - > 
-        curl --request PUT --data "process_mode=oldest_first" --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/resource_groups/trigger-test-repo"
-
-        curl --request PUT --data "process_mode=oldest_first" --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/resource_groups/integration-test"
+        curl --request PUT --data "process_mode=${PROCESS_MODE}" --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" 
+        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/resource_groups/${RESOURCE_GROUP}"
+  rules:
+    - changes: 
+      - .gitlab-pre-variables.yml
+  parallel:
+    matrix:
+      - RESOURCE_GROUP: ["trigger-test-repo", "integration-test"]
+    
 
 unit test:
   image: python:3.11-alpine
@@ -26,5 +36,4 @@ integration test:
     strategy: depend
   parallel:
     matrix:
-      - TEST_INPUT_DIR: "test/integration_test_inputs/mkdocs-material"
-      - TEST_INPUT_DIR: "test/integration_test_inputs/no-input"
+      - TEST_INPUT_DIR: ["test/integration_test_inputs/mkdocs-material", "test/integration_test_inputs/no-input"]
