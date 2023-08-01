@@ -21,24 +21,37 @@ class TestFileContent(TestCase):
 
     def test_gitlab_ci_file_exists(self):
         assert (Path(self.tmpdir.name) / ".gitlab-ci.yml").exists()
-        
+
     def test_deploy_file_exists(self):
         assert (Path(self.tmpdir.name) / "helper-scripts/deploy-prod-image.sh").exists()
-    
+
     def test_deploy_test_file_exists(self):
         assert (Path(self.tmpdir.name) / "helper-scripts/deploy-test-image.sh").exists()
+
+    def test_sample_dockerfile_exists(self):
+        assert (Path(self.tmpdir.name) / "Dockerfile").exists()
+
+    def test_sample_test_exists(self):
+        assert (Path(self.tmpdir.name) / "test.sh").exists()
+
+    def test_sample_determine_docker_image_tags_exists(self):
+        assert (Path(self.tmpdir.name) / "determine-docker-image-tags.sh").exists()
 
     def test_docker_image_name_is_used_in_gitlab_ci_file(self):
         file_content = (Path(self.tmpdir.name) / ".gitlab-ci.yml").read_text()
         assert f"docker image build -t {self.docker_image_name}" in file_content
-        
+
     def test_docker_image_name_is_used_in_deploy_file(self):
-        file_content = (Path(self.tmpdir.name) / "helper-scripts/deploy-prod-image.sh").read_text()
-        assert not "{{ docker_image_name }}" in file_content
-    
+        file_content = (
+            Path(self.tmpdir.name) / "helper-scripts/deploy-prod-image.sh"
+        ).read_text()
+        assert "{{ docker_image_name }}" not in file_content
+
     def test_docker_image_name_is_used_in_deploy_test_file(self):
-        file_content = (Path(self.tmpdir.name) / "helper-scripts/deploy-test-image.sh").read_text()
-        assert not "{{ docker_image_name }}" in file_content
+        file_content = (
+            Path(self.tmpdir.name) / "helper-scripts/deploy-test-image.sh"
+        ).read_text()
+        assert "{{ docker_image_name }}" not in file_content
 
     @staticmethod
     def get_template_path() -> Path:
