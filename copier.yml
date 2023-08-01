@@ -9,4 +9,9 @@ _exclude:
     - /_ci_cd
     - /_test
 
+_skip_if_exists:
+    - Dockerfile
+    - test.sh
+    - determine-docker-image-tags.sh
+
 _min_copier_version: "8.1.0"
