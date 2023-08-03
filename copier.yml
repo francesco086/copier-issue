@@ -3,10 +3,12 @@ docker_image_name:
   help: "What is the name of the docker image you want to create? IMPORTANT: if you are planning to push the image to eoncds.azurecr.io (default GitLab registry and of this template), then the name should be in the format leanix_id-name-of-your-choice, e.g. 'apl109262-my-docker-image'"
   placeholder: apl109262-my-docker-image
 
+_subdirectory: template
+
 _exclude:
     - /.git
     - /.gitignore
-    - /_ci_cd
+    - /ci_cd
     - /_test
 
 _skip_if_exists:
