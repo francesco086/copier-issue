@@ -8,6 +8,8 @@ generate copies:
     - pip install -U pip setuptools wheel && pip install -r ci_cd/requirements.txt
     - . ci_cd/utils.sh
     - mkdir dst && cp ${TEST_INPUT_DIR}/../.gitlab-ci.yml dst/.gitlab-ci.yml && cd dst
+    - git config --global user.email "docker-image-creator@gitlab.com"
+    - git config --global user.name "docker-image-creator"
   script:
     - copier copy --data docker_image_name=apl211945-docker-image-creator-test ../ docker_image
     - if [[ -e ${TEST_INPUT_DIR}/Dockerfile ]]; then cp ${TEST_INPUT_DIR}/Dockerfile docker_image/Dockerfile; fi
