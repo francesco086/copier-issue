@@ -6,7 +6,7 @@ build_test_docker_image:
   extends: .docker_auth
   image: ${DOCKER_REGISTRY}/docker:latest
   script:
-    - docker image build -t {{ docker_image_name }} .
+    - docker image build -t {{ docker_image_name }} {{ _copier_conf.dst_path }}
     - sh {{ _copier_conf.dst_path }}/helper-scripts/deploy-test-image.sh
 
 test_built_docker_image:
