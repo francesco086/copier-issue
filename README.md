@@ -18,7 +18,7 @@ It ships a GitLab CI/CD pipeline that builds, tests, and pushes the image to the
 2. **From the root folder of a git repository**, copy the template by running the following command and answering to the prompted questions
 
    ```console
-   copier copy https://git.eon-cds.de/repos/data-science-lib/templates/docker-image-creator/src.git path/to/destination
+   copier copy https://git.eon-cds.de/repos/data-science-lib/templates/copier/docker-image-creator/src.git path/to/destination
    ```
 
    Notice that a valid `path/to/destination` can be `.` (the git repository root folder).
