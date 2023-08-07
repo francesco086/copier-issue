@@ -43,4 +43,4 @@ integration test:
     strategy: depend
   parallel:
     matrix:
-      - TEST_INPUT_DIR: ["_test/integration_test_inputs/mkdocs-material", "_test/integration_test_inputs/no-input"]
+      - TEST_INPUT_DIR: ["test/integration_test_inputs/mkdocs-material", "test/integration_test_inputs/no-input"]

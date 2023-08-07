@@ -1,0 +1,4 @@
+build docker image:
+  trigger:
+    include:
+      - local: 'docker_image/.gitlab-ci.yml'

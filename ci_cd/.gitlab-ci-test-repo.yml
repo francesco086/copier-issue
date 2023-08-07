@@ -7,13 +7,13 @@ generate copies:
     - apk update && apk add git
     - pip install -U pip setuptools wheel && pip install -r ci_cd/requirements.txt
     - . ci_cd/utils.sh
+    - mkdir dst && cp ${TEST_INPUT_DIR}/../.gitlab-ci.yml dst/.gitlab-ci.yml && cd dst
   script:
-    - copier copy --data docker_image_name=apl211945-docker-image-creator-test . dst
-    - if [[ -e ${TEST_INPUT_DIR}/Dockerfile ]]; then cp ${TEST_INPUT_DIR}/Dockerfile dst/Dockerfile; fi
-    - if [[ -e ${TEST_INPUT_DIR}/test.sh ]]; then cp ${TEST_INPUT_DIR}/test.sh dst/test.sh; fi
-    - if [[ -e ${TEST_INPUT_DIR}/determine-docker-image-tags.sh ]]; then cp ${TEST_INPUT_DIR}/determine-docker-image-tags.sh dst/determine-docker-image-tags.sh; fi
-    - cat dst/.gitlab-ci.yml
-    - hard_push_to_repo "dst" "${TEST_REPO_URL}"
+    - copier copy --data docker_image_name=apl211945-docker-image-creator-test ../ docker_image
+    - if [[ -e ${TEST_INPUT_DIR}/Dockerfile ]]; then cp ${TEST_INPUT_DIR}/Dockerfile docker_image/Dockerfile; fi
+    - if [[ -e ${TEST_INPUT_DIR}/test.sh ]]; then cp ${TEST_INPUT_DIR}/test.sh docker_image/test.sh; fi
+    - if [[ -e ${TEST_INPUT_DIR}/determine-docker-image-tags.sh ]]; then cp ${TEST_INPUT_DIR}/determine-docker-image-tags.sh docker_image/determine-docker-image-tags.sh; fi
+    - hard_push_to_repo "." "${TEST_REPO_URL}"
 
 run test repo pipeline:
   stage: test
