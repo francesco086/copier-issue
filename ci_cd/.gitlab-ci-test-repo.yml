@@ -21,5 +21,5 @@ run test repo pipeline:
   stage: test
   resource_group: integration-test
   trigger:
-    project: repos/data-science-lib/templates/docker-image-creator-test-repo
+    project: repos/data-science-lib/templates/docker-image-creator/test
     strategy: depend
