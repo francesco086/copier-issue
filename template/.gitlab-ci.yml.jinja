@@ -3,23 +3,23 @@ include:
 
 build_test_docker_image:
   stage: build
-  extends: .docker_and_ci_cd_setup
+  extends: .docker_auth
   image: ${DOCKER_REGISTRY}/docker:latest
   script:
     - docker image build -t {{ docker_image_name }} .
-    - sh helper-scripts/deploy-test-image.sh
+    - sh {{ _copier_conf.dst_path }}/helper-scripts/deploy-test-image.sh
 
 test_built_docker_image:
   stage: test
   image: ${DOCKER_REGISTRY}/{{ docker_image_name }}:test-${CI_PIPELINE_ID}
   script:
-    - sh test.sh
+    - sh {{ _copier_conf.dst_path }}/test.sh
 
 determine_docker_image_tags:
   stage: deploy
   image: ${DOCKER_REGISTRY}/{{ docker_image_name }}:test-${CI_PIPELINE_ID}
   script:
-    - DOCKER_IMAGE_TAGS="$(sh determine-docker-image-tags.sh)"
+    - DOCKER_IMAGE_TAGS="$(sh {{ _copier_conf.dst_path }}/determine-docker-image-tags.sh)"
     - echo "Docker image will be tagged with the following tags (space separated) '${DOCKER_IMAGE_TAGS}'"
     - echo "DOCKER_IMAGE_TAGS=${DOCKER_IMAGE_TAGS}" >> docker-image-tags.env
     - echo "DOCKER_IMAGE_TAG_TO_SCAN=$(echo ${DOCKER_IMAGE_TAGS} | cut -d ' ' -f 1)" >> docker-image-tags.env
@@ -32,10 +32,10 @@ deploy_docker_image:
   needs:
     - job: determine_docker_image_tags
       artifacts: true
-  extends: .docker_and_ci_cd_setup
+  extends: .docker_auth
   image: ${DOCKER_REGISTRY}/docker:latest
   script:
-    - sh helper-scripts/deploy-prod-image.sh "${DOCKER_IMAGE_TAGS}"
+    - sh {{ _copier_conf.dst_path }}/helper-scripts/deploy-prod-image.sh "${DOCKER_IMAGE_TAGS}"
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
@@ -57,8 +57,7 @@ container_scanning:
   rules:
   - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
-.docker_and_ci_cd_setup:
+.docker_auth:
   before_script:
     - mkdir -p ${HOME}/.docker
     - echo ${DOCKER_AUTH_CONFIG} >> ${HOME}/.docker/config.json
-    - cd {{ _copier_conf.dst_path }}
