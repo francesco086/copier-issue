@@ -61,4 +61,4 @@ container_scanning:
   before_script:
     - mkdir -p ${HOME}/.docker
     - echo ${DOCKER_AUTH_CONFIG} >> ${HOME}/.docker/config.json
-    - cd _copier_conf.dst_path
+    - cd {{ _copier_conf.dst_path }}
