@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # !!! Replace the content of this file with your own (OPTIONAL) !!!
 # This script will run in a container of your Docker image.
 # This file can be used to test that the docker image has built successfully.
