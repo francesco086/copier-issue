@@ -13,13 +13,15 @@ test_built_docker_image:
   stage: test
   image: ${DOCKER_REGISTRY}/{{ docker_image_name }}:test-${CI_PIPELINE_ID}
   script:
-    - sh {{ _copier_conf.dst_path }}/test.sh
+    - chmod +x {{ _copier_conf.dst_path }}/test.sh
+    - ./{{ _copier_conf.dst_path }}/test.sh
 
 determine_docker_image_tags:
   stage: deploy
   image: ${DOCKER_REGISTRY}/{{ docker_image_name }}:test-${CI_PIPELINE_ID}
   script:
-    - DOCKER_IMAGE_TAGS="$(sh {{ _copier_conf.dst_path }}/determine-docker-image-tags.sh)"
+    - chmod +x {{ _copier_conf.dst_path }}/determine-docker-image-tags.sh
+    - DOCKER_IMAGE_TAGS="$(./{{ _copier_conf.dst_path }}/determine-docker-image-tags.sh)"
     - echo "Docker image will be tagged with the following tags (space separated) '${DOCKER_IMAGE_TAGS}'"
     - echo "DOCKER_IMAGE_TAGS=${DOCKER_IMAGE_TAGS}" >> docker-image-tags.env
     - echo "DOCKER_IMAGE_TAG_TO_SCAN=$(echo ${DOCKER_IMAGE_TAGS} | cut -d ' ' -f 1)" >> docker-image-tags.env

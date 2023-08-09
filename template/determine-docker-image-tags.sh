@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # !!! Replace the content of this file with your own !!!
 # This script will run in a container of your Docker image.
 # This script must return (by means of an `echo` command)
