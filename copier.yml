@@ -17,3 +17,12 @@ _skip_if_exists:
     - determine-docker-image-tags.sh
 
 _min_copier_version: "8.1.0"
+
+_migrations:
+    - version: 1.1.0
+      before:
+        - cp test.sh test.sh.bak
+        - cp determine-docker-image-tags.sh determine-docker-image-tags.sh.bak
+      after:
+          - echo '#!/bin/sh' | cat - test.sh.bak > test.sh && rm test.sh.bak
+          - echo '#!/bin/sh' | cat - determine-docker-image-tags.sh.bak > determine-docker-image-tags.sh && rm determine-docker-image-tags.sh.bak
